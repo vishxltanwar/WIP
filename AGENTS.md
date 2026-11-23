@@ -20,6 +20,7 @@ cargo test --release         # Tests pass/fail silently
 | `--uninstall` | Restore stock + remove installed fonts |
 | `--wallpaper <n>` | Switch to wallpaper n for current theme |
 | `--pack-test <dir> <id>` | Export Zebar widget pack to folder |
+| `--help` / `-h` | Show usage and theme list |
 
 Headless results written to `data\cli-result.txt`.
 
@@ -29,6 +30,9 @@ Headless results written to `data\cli-result.txt`.
 |------|---------|
 | `src/main.rs` | Entrypoint, CLI router, UI wiring |
 | `src/theme.rs` | 12 preset themes + sanitisation |
+| `src/error.rs` | Unified error types |
+| `src/logging.rs` | File-based logging to data\rice-studio.log |
+| `src/config.rs` | User preferences (data\config.json) |
 | `src/apply.rs` | Apply/undo, history files in `data\history` |
 | `src/system.rs` | Supervisor, anti-cheat detection, panic hotkey |
 | `src/apply.rs:35-40` | Data dir is `data/` next to exe |

@@ -3,7 +3,10 @@ mod apply;
 mod art;
 mod components;
 mod backgrounds;
+mod config;
+mod error;
 mod fonts;
+mod logging;
 mod gpu;
 mod paint;
 mod preview;
@@ -260,6 +263,7 @@ fn main() {
         print_help();
         return;
     }
+    logging::init();
     // background modes, no window: the supervisor started at sign-in, the panic switch, uninstall
     match args.get(1).map(|s| s.as_str()) {
         Some("--supervise") => return system::supervise(),
@@ -280,7 +284,7 @@ fn main() {
             return cli_result(r);
         }
         Some("--undo") => return cli_result(apply::undo()),
-        Some("--wallpaper") => return cli_result(args.get(2).and_then(|n| n.parse().ok()).ok_or("which wallpaper?".to_string()).and_then(apply::pick_wallpaper)),
+        Some("--wallpaper") => return cli_result(args.get(2).and_then(|n| n.parse().ok()).ok_or_else(|| "which wallpaper?".to_string()).and_then(apply::pick_wallpaper)),
         _ => {}
     }
     if args.get(1).map(|s| s.as_str()) == Some("--render-test") {

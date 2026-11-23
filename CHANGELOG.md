@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Compile-time validation for theme IDs (planned)
-- Preview mode for `--apply` to show changes before applying (planned)
+- CLI help (`--help` / `-h`) with comprehensive usage and theme list
+- Compile-time theme ID validation (`--apply invalid` lists valid themes)
+- Unified error types in `src/error.rs`
+- File-based logging to `data\rice-studio.log`
+- User preferences config file (`data\config.json`)
+- GitHub Actions CI workflow (build, test, clippy on Windows)
+- CHANGELOG.md following Keep a Changelog format
 
 ### Changed
 - Removed unused `base64` dependency

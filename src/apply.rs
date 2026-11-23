@@ -124,6 +124,7 @@ fn activate(step: &Path) -> Result<(), String> {
 }
 
 pub fn apply(files: Vec<PackFile>, wallpaper_png: Vec<u8>, parts: Components, fonts: &[&str]) -> Result<(), String> {
+    crate::logging::info("apply: starting");
     let old: Option<Stock> = fs::read_to_string(stock_path()).ok().and_then(|t| serde_json::from_str(&t).ok());
     let stock = match old {
         None => Some(Stock {
@@ -161,6 +162,7 @@ fn snapshot_files() -> Result<Vec<(String, bool)>, String> {
 
 /// One apply back; past the first apply, back to how the desktop was before Rice Studio.
 pub fn undo() -> Result<(), String> {
+    crate::logging::info("undo: starting");
     let mut h = history();
     let last = h.pop().ok_or("Nothing to undo")?;
     fs::remove_dir_all(&last).map_err(e)?;
@@ -169,6 +171,7 @@ pub fn undo() -> Result<(), String> {
 
 /// The desktop exactly as it was before the first apply. Safe to call when nothing was ever applied.
 pub fn restore_stock() -> Result<(), String> {
+    crate::logging::info("restore_stock: starting");
     let _ = fs::remove_dir_all(history_dir());
     let Ok(text) = fs::read_to_string(stock_path()) else { return Ok(()) };
     let s: Stock = serde_json::from_str(&text).map_err(e)?;

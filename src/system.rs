@@ -232,6 +232,7 @@ fn game_mode(on: bool) {
 
 /// Stock Windows: everything stopped, the original wallpaper and bar settings back, nothing starts at sign-in.
 pub fn panic() -> Result<(), String> {
+    crate::logging::info("panic: emergency restore");
     stop_supervisor(); // or it would restart the bar and the tiler a moment later
     stop_all();
     set_autostart(false)?;
