@@ -68,6 +68,11 @@ fn t(id: &'static str, name: &str, tagline: &'static str, c: [&str; 6], f: [&str
         ws: ws.iter().map(|s| s.to_string()).collect(), style, height, motion, clock, treatment }
 }
 
+pub const THEME_IDS: &[&str] = &[
+    "vagabond", "fresco", "relic", "inferno", "schematic",
+    "marquee", "dossier", "xerox", "etch", "dither", "ghost", "y2k",
+];
+
 /// The ten cards; the second entry of a card is its one-click variant.
 pub fn presets() -> Vec<Vec<Theme>> {
     vec![

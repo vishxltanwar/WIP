@@ -221,8 +221,45 @@ fn cli_result(r: Result<(), String>) {
     std::process::exit(if r.is_ok() { 0 } else { 1 });
 }
 
+const HELP: &str = "\
+Rice Studio — pick a desktop theme, make it yours, apply it to Windows
+
+USAGE:
+    rice-studio                    Open the GUI
+    rice-studio --apply <id>       Apply theme by ID (e.g. --apply relic)
+    rice-studio --undo             Undo last apply
+    rice-studio --apply --undo     Restore stock Windows
+    rice-studio --supervise        Run background supervisor (started at sign-in)
+    rice-studio --autostart on|off Toggle Windows startup
+    rice-studio --panic            Emergency: turn everything off, restore stock
+    rice-studio --uninstall        Restore stock + remove installed fonts
+    rice-studio --wallpaper <n>    Switch to wallpaper n for current theme
+    rice-studio --pack-test <dir> <id>  Export Zebar widget pack to folder
+
+THEMES:
+    vagabond, fresco, relic, inferno, schematic, marquee,
+    dossier, xerox, etch, dither, ghost, y2k
+
+GUI:
+    Left/Right arrows or click cards to switch themes
+    Click a card to open its editor (colors, fonts, layout, wallpapers)
+    Drag images into the editor to use as wallpapers
+    Apply / Undo / Turn Off buttons at bottom
+
+PANIC HOTKEY:
+    Ctrl+Alt+Shift+Q  (restores stock Windows immediately)
+";
+
+fn print_help() {
+    eprint!("{}", HELP);
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
+    if args.get(1).map(|s| s.as_str()) == Some("--help") || args.get(1).map(|s| s.as_str()) == Some("-h") {
+        print_help();
+        return;
+    }
     // background modes, no window: the supervisor started at sign-in, the panic switch, uninstall
     match args.get(1).map(|s| s.as_str()) {
         Some("--supervise") => return system::supervise(),
@@ -232,6 +269,9 @@ fn main() {
         // the same work as the Apply and Undo buttons, headless (tests now, Claude's connector later)
         Some("--apply") => {
             let id = args.get(2).cloned().unwrap_or_default();
+            if !theme::THEME_IDS.contains(&id.as_str()) {
+                return cli_result(Err(format!("no theme called {id}; valid: {}", theme::THEME_IDS.join(", "))));
+            }
             let r = theme::presets().into_iter().flatten().find(|t| t.id == id).ok_or(format!("no theme called {id}")).and_then(|t| {
                 let (w, h) = screen();
                 let px = wallpaper::compose(&wallpaper::Shot { w, h, theme: &t, images: &[], layout: "fill", treatment: t.treatment, strength: 0.85 });
